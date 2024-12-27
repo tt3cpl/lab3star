@@ -27,20 +27,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd lab3star
           npm install
 
       - name: Run tests
         run: |
-          cd lab3star
           npm test
 
       - name: Build the app
         run: |
-          cd lab3star
           npm run build
 
       - name: Deploy the app
         run: |
-          cd lab3star
           npm run deploy
