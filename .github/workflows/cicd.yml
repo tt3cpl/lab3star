@@ -19,15 +19,19 @@ jobs:
           sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
           sudo apt-get update && sudo apt-get install -y vault
 
-      - name: Authenticate with Vault
-        run: |
-          export VAULT_ADDR='http://127.0.0.1:8200'
-          export VAULT_TOKEN=${{ secrets.VAULT_TOKEN }}
-          echo "Authenticated with Vault"
+      - name: Authenticate with Doppler
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+         run: doppler setup --token $DOPPLER_TOKEN --no-prompt
 
-      - name: Retrieve secret from Vault
-        run: |
-          export USERNAME=$(vault kv get -field=username secret/mysecret)
-          export PASSWORD=$(vault kv get -field=password secret/mysecret)
-          echo "Using username $USERNAME"
 
+      - name: Retrieve secret from Doppler
+        renv:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: |
+          echo "Fetching secrets..."
+          USE=$(doppler secrets get USE --plain)
+          PAROL=$(doppler secrets get PAROL --plain)
+          
+          echo "$USE"
+          echo "$PAROL"
