@@ -15,21 +15,22 @@ jobs:
 
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
+        with:
+          token: ${{ secrets.DOPPLER_TOKEN }}
+          project: ${{ secrets.DOPPLER_PROJECT }}
 
-      - name: Authenticate with Doppler
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-        run: doppler setup --token $DOPPLER_TOKEN --no-prompt
-
-
-
-      - name: Retrieve secret from Doppler
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+      - name: Install dependencies
         run: |
-          echo "Fetching secrets..."
-          USE=$(doppler secrets get USE --plain)
-          PAROL=$(doppler secrets get PAROL --plain)
-          
-          echo "$USE"
-          echo "$PAROL"
+          npm install
+
+      - name: Run tests
+        run: |
+          npm test
+
+      - name: Build the app
+        run: |
+          npm run build
+
+      - name: Deploy the app
+        run: |
+          npm run deploy
