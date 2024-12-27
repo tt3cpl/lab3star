@@ -13,34 +13,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Doppler CLI (without root privileges)
-        run: |
-          curl -sSL https://cli.doppler.com/download/linux | tar xz -C ./doppler-cli
-          echo "$PWD/doppler-cli/doppler" >> $GITHUB_PATH 
-
-      - name: Authenticate with Doppler
-        run: |
-          doppler login --token ${{ secrets.DOPPLER_TOKEN }} 
-
-      - name: Fetch secrets from Doppler
-        run: |
-          API_KEY=$(doppler secrets get API_KEY --plain)
-          DATABASE_PASSWORD=$(doppler secrets get DATABASE_PASSWORD --plain)
-          
-          echo "Using API Key: $API_KEY"
+      - name: Set up Doppler CLI
+        uses: dopplerhq/cli-action@v3
+        with:
+          token: ${{ secrets.DOPPLER_TOKEN }}
+          project: ${{ secrets.DOPPLER_PROJECT }}
 
       - name: Install dependencies
         run: |
+          # Установка необходимых зависимостей
           npm install
 
       - name: Run tests
         run: |
+          # Запуск тестов
           npm test
 
       - name: Build the app
         run: |
+          # Сборка приложения
           npm run build
-
+        
       - name: Deploy the app
         run: |
+          # Деплой
           npm run deploy
