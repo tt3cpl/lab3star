@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD
 
 on:
   push:
@@ -13,28 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Doppler CLI
+      - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
-        with:
-          token: ${{ secrets.DOPPLER_TOKEN }}
-          project: ${{ secrets.DOPPLER_PROJECT }}
 
-      - name: Install dependencies
-        run: |
-          # Установка необходимых зависимостей
-          npm install
+      - name: Authenticate with Doppler
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: doppler setup --token $DOPPLER_TOKEN --no-prompt
 
-      - name: Run tests
-        run: |
-          # Запуск тестов
-          npm test
 
-      - name: Build the app
+
+      - name: Retrieve secret from Doppler
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
         run: |
-          # Сборка приложения
-          npm run build
-        
-      - name: Deploy the app
-        run: |
-          # Деплой
-          npm run deploy
+          echo "Fetching secrets..."
+          USE=$(doppler secrets get USE --plain)
+          PAROL=$(doppler secrets get PAROL --plain)
+          
+          echo "$USE"
