@@ -13,19 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Doppler CLI
-        uses: dopplerhq/cli-action@v3
-        with:
-          token: ${{ secrets.DOPPLER_TOKEN }}  
-          project: ${{ secrets.DOPPLER_PROJECT }}  
+      - name: Install Doppler CLI
+        run: |
+          curl -sSL https://cli.doppler.com/install.sh | bash
 
+      - name: Authenticate with Doppler
+        run: |
+          doppler login --token ${{ secrets.DOPPLER_TOKEN }} 
 
       - name: Fetch secrets from Doppler
         run: |
-         API_KEY=$(doppler secrets get API_KEY --plain)
-         DATEBASE_PASSWORD=$(doppler secrets get DATABASE_PASSWORD --plain)
-    
-         echo "Using API Key: $API_KEY"
+          API_KEY=$(doppler secrets get API_KEY --plain)
+          DATABASE_PASSWORD=$(doppler secrets get DATABASE_PASSWORD --plain)
+          
+          echo "Using API Key: $API_KEY"
 
       - name: Install dependencies
         run: |
