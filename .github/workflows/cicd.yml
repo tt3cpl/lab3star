@@ -13,9 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Doppler CLI
+      - name: Install Doppler CLI (without root privileges)
         run: |
-          curl -sSL https://cli.doppler.com/install.sh | bash
+          curl -sSL https://cli.doppler.com/download/linux | tar xz -C ./doppler-cli
+          echo "$PWD/doppler-cli/doppler" >> $GITHUB_PATH 
 
       - name: Authenticate with Doppler
         run: |
