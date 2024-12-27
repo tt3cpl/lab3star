@@ -13,20 +13,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Vault CLI
-        run: |
-          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-          sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-          sudo apt-get update && sudo apt-get install -y vault
-      
+        name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+
       - name: Authenticate with Doppler
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-         run: doppler setup --token $DOPPLER_TOKEN --no-prompt
+        run: doppler setup --token $DOPPLER_TOKEN --no-prompt
+
 
 
       - name: Retrieve secret from Doppler
-        renv:
+        env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
         run: |
           echo "Fetching secrets..."
