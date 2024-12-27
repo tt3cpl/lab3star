@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
@@ -13,24 +13,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v3
+      - name: List files to ensure package.json exists
+        run: |
+          ls -la
+
+      - name: Set up Doppler CLI
+        uses: dopplerhq/action@v3
         with:
           token: ${{ secrets.DOPPLER_TOKEN }}
           project: ${{ secrets.DOPPLER_PROJECT }}
+          config: ${{ secrets.DOPPLER_CONFIG }}
 
       - name: Install dependencies
         run: |
+          cd lab3star
           npm install
 
       - name: Run tests
         run: |
+          cd lab3star
           npm test
 
       - name: Build the app
         run: |
+          cd lab3star
           npm run build
 
       - name: Deploy the app
         run: |
+          cd lab3star
           npm run deploy
